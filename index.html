@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -109,7 +110,7 @@ button{font:inherit;color:inherit}
 .key{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px}.key ul{list-style:none;padding:0}.key li{display:flex;gap:10px;align-items:center;margin-bottom:6px;font-size:15.5px}
 .key p{max-width:70ch}
 footer{max-width:1500px;margin:0 auto;padding:16px 20px 40px;border-top:1px solid var(--rule);font-size:13.5px;color:var(--ink2)}
-@media (max-width:900px){#panel{position:static;width:auto;margin-top:12px;box-shadow:none;max-height:none}#map{height:64vh}.leaders{grid-template-columns:1fr}
+@media (max-width:900px){#panel{position:fixed;left:0;right:0;top:auto;bottom:0;width:auto;max-height:70vh;z-index:50;touch-action:pan-y;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;border-width:2px 0 0;box-shadow:0 -6px 18px rgba(43,33,22,.35);padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}#map{height:64vh}.leaders{grid-template-columns:1fr}
  #periods{grid-template-columns:repeat(3,1fr)}.per:nth-child(3){border-right:0}.per:nth-child(-n+3){border-bottom:1px solid var(--rule)}
  .row,.reg-yrs{grid-template-columns:44px 1fr}.rs{grid-column:1/-1}.reg-yrs .yrs{margin-left:96px}.reg-yrs>span{display:none}
  .cap{font-size:13.5px;padding:9px 12px}.cap h2{font-size:22px}}
@@ -1015,10 +1016,10 @@ const pts=new Map();let play=null;let drag=null,moved=0,pinch=null;
 svg.addEventListener('pointerdown',e=>{pts.set(e.pointerId,[e.clientX,e.clientY]);moved=0;if(pts.size===1)drag={x:e.clientX,y:e.clientY,vx:vb.x,vy:vb.y};else if(pts.size===2){const[a,b]=[...pts.values()];pinch={d:Math.hypot(a[0]-b[0],a[1]-b[1]),w:vb.w};drag=null}});
 svg.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);const r=svg.getBoundingClientRect();const ppu=Math.min(r.width/vb.w,r.height/vb.h);
  if(pinch&&pts.size===2){const[a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);const[cx,cy]=toSvg((a[0]+b[0])/2,(a[1]+b[1])/2);zoomAt(cx,cy,(pinch.w/(d/pinch.d))/vb.w);moved=9;return}
- if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4){moved=9;svg.setPointerCapture(e.pointerId);svg.classList.add('grab')}vb.x=drag.vx-dx/ppu;vb.y=drag.vy-dy/ppu;setVB()}});
+ if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>(e.pointerType==='mouse'?4:14)){moved=9;svg.setPointerCapture(e.pointerId);svg.classList.add('grab')}vb.x=drag.vx-dx/ppu;vb.y=drag.vy-dy/ppu;setVB()}});
 const up=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=null;if(!pts.size){drag=null;svg.classList.remove('grab')}};
 svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',up);
-svg.addEventListener('click',e=>{if(moved>4)return;const em=e.target.closest('.emb');const ev=e.target.closest('.ev');const tr=e.target.closest('.terr');
+svg.addEventListener('click',e=>{if(moved>4){moved=0;return}const em=e.target.closest('.emb');const ev=e.target.closest('.ev');const tr=e.target.closest('.terr');
  if(ev)return showEv(ev,e);hideEv();if(em)return pick(em.dataset.f);if(tr&&LAY.terr)return pick(tr.dataset.f)});
 svg.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const em=e.target.closest('.emb'),ev=e.target.closest('.ev');if(em){e.preventDefault();pick(em.dataset.f)}if(ev){e.preventDefault();const r=ev.getBoundingClientRect();showEv(ev,{clientX:r.left+r.width/2,clientY:r.top})}});
 function showEv(g,e){const ev=EV[+g.dataset.i];const t=$('#tip');const r=$('#map').getBoundingClientRect();t.innerHTML=`<b>${esc(ev[4])}</b>${esc(ev[5])}`;t.hidden=false;
@@ -1073,3 +1074,5 @@ build();book();render();fit();if(innerWidth<700){$('#cap').classList.add('min');
 
 $('#capt').onclick=()=>{const c=$('#cap');c.classList.toggle('min');$('#capt').textContent=c.classList.contains('min')?'+':'–'};
 </script></body></html>
+
+</body></html>
